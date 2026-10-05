@@ -1,0 +1,89 @@
+{
+  "name": "antigravity-quota-lens",
+  "displayName": "Antigravity Quota Lens",
+  "description": "Real-time Gemini token usage, 5-hour sprint quota, and weekly limits right on your status bar.",
+  "version": "1.2.0",
+  "publisher": "NurshatjanSherpidin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NurshatjanSherpidin/antigravity-quota-lens"
+  },
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "antigravity",
+    "quota",
+    "token",
+    "gemini",
+    "weekly",
+    "rate limit"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "antigravityQuota.refresh",
+        "title": "Refresh Quota Now",
+        "category": "Antigravity Quota"
+      },
+      {
+        "command": "antigravityQuota.showDetails",
+        "title": "Show Quota Details",
+        "category": "Antigravity Quota"
+      },
+      {
+        "command": "antigravityQuota.copySummary",
+        "title": "Copy Quota Summary to Clipboard",
+        "category": "Antigravity Quota"
+      }
+    ],
+    "configuration": {
+      "title": "Antigravity Quota Monitor",
+      "properties": {
+        "antigravityQuota.displayFormat": {
+          "type": "string",
+          "enum": [
+            "both",
+            "compactBoth",
+            "5hOnly",
+            "weeklyOnly"
+          ],
+          "enumDescriptions": [
+            "Full: Shows both 5h and Weekly quotas with countdown timers (e.g. Gemini 5h: 88% (4h 32m) | Wk: 64% (5d 11h))",
+            "Compact: Minimal display (e.g. 5h: 88% | Wk: 64%)",
+            "5-Hour Only: Shows only the 5-hour burst quota",
+            "Weekly Only: Shows only the weekly baseline limit"
+          ],
+          "default": "both",
+          "description": "Information displayed in the status bar."
+        },
+        "antigravityQuota.pollingInterval": {
+          "type": "number",
+          "default": 30,
+          "minimum": 5,
+          "maximum": 600,
+          "description": "Interval in seconds to automatically refresh quota from the Antigravity language server."
+        },
+        "antigravityQuota.showCredits": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include prompt credits count in the status bar item."
+        },
+        "antigravityQuota.statusBarPriority": {
+          "type": "number",
+          "default": 100,
+          "description": "Priority position of the status bar item (higher moves it further left within the right-aligned section)."
+        }
+      }
+    }
+  }
+}
