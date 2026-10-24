@@ -1,0 +1,35 @@
+name: Publish GitHub release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-github-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: github-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate and package
+        run: |
+          node --check extension.js
+          npx --yes @vscode/vsce package --no-dependencies --out antigravity-quota-lens-1.2.0.vsix
+      - name: Publish version without replacing existing assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release already exists; leaving it unchanged."
+            exit 0
+          fi
+          gh release create "v$VERSION" antigravity-quota-lens-1.2.0.vsix --target "$GITHUB_SHA" --title "Antigravity Quota Lens $VERSION" --notes "Displays remaining Gemini 5-hour and weekly quotas, reset countdowns, optional prompt credits, and quota details from the local Antigravity language server. Install the attached VSIX using Extensions > Install from VSIX. Requires desktop Antigravity IDE. This extension reports quota percentages; it does not count individual tokens. Live IDE compatibility has not been verified for this release."
