@@ -1,48 +1,44 @@
 # Antigravity Quota Lens
 
-A sleek, lightweight VS Code extension designed specifically for **Antigravity IDE** to display real-time **Gemini token usage**, **5-hour sprint quotas**, and **weekly credit limits** persistently in the IDE window without navigating into settings.
+Monitor the quota reported by Antigravity IDE from its status bar. This extension shows remaining quota percentages and reset countdowns; it does not count individual input or output tokens.
 
----
+## Features
 
-## ✨ Features
+- Gemini 5-hour and weekly remaining quota with reset countdowns.
+- Optional available prompt credits in the status bar.
+- Hover details for Gemini and, when reported, Claude quota groups and account credits.
+- Warning background at 40% remaining or below; error background at 20% or below.
+- Click to refresh, change display format, copy a quota summary, or open settings.
 
-- **Persistent Status Bar Visibility**: Positioned right next to your zoom and window layout controls in the bottom status bar (`$(pulse) Gemini: 94% (2h 36m) | 500 Credits`).
-- **Dynamic Color Warnings**: Automatically updates colors based on remaining quota:
-  - 🟢 **Normal (> 50%)**: Standard theme color
-  - 🟡 **Warning (20% – 50%)**: Yellow warning badge
-  - 🔴 **Critical (< 20%)**: Red error badge
-- **Rich Hover Tooltip**:
-  - Exact percentage remaining for your preferred model.
-  - Visual ASCII/Unicode quota progress bar `[█████████░]`.
-  - 5-Hour sprint window reset countdown (`2h 36m remaining`).
-  - Active model breakdown table (Gemini 3.8 Flash, Gemini 3.1 Pro, Claude Opus 4.6, Claude Sonnet 4.6, GPT-OSS 120B).
-  - Available prompt credits and flow credits.
-- **Interactive QuickPick Menu**: Click the status bar item to:
-  - 🔄 Manually refresh quota on demand.
-  - ⚡ Switch the primary tracked model directly from a dropdown list.
-  - 📋 Copy a formatted Markdown quota report to the clipboard.
-  - ⚙️ Access extension settings.
-- **100% Local & Zero Overhead**: Directly queries the local Antigravity Language Server running on `127.0.0.1` via HTTPS with automatic process discovery. No external servers or API keys needed.
+## Requirements and installation
 
----
+Requires desktop Antigravity IDE and a running Antigravity language server. The extension uses VS Code extension APIs, but ordinary VS Code alone does not provide the required language server.
 
-## ⚙️ Configuration Settings
+Install from your extension registry, or use **Extensions → Install from VSIX…** and select the release package. Reload the IDE if prompted.
 
-Customize behavior via `Settings -> Extensions -> Antigravity Quota Monitor`:
+## Settings
 
 | Setting | Default | Description |
-| :--- | :---: | :--- |
-| `antigravityQuota.pollingInterval` | `30` | Interval in seconds to automatically poll quota from the language server. |
-| `antigravityQuota.preferredModel` | `Gemini 3.8 Flash (High)` | Primary model to display in the status bar. |
-| `antigravityQuota.showCountdown` | `true` | Show countdown timer for the 5-hour rolling sprint window. |
-| `antigravityQuota.showCredits` | `true` | Show available prompt credits. |
-| `antigravityQuota.compactMode` | `false` | Enable minimal view (`$(pulse) 94% (2h 36m)`) to save status bar width. |
-| `antigravityQuota.statusBarPriority` | `100` | Position weight in the status bar (adjusts proximity to zoom/layout controls). |
+| --- | --- | --- |
+| `antigravityQuota.displayFormat` | `both` | `both`, `compactBoth`, `5hOnly`, or `weeklyOnly`. |
+| `antigravityQuota.pollingInterval` | `30` | Refresh interval in seconds, between 5 and 600. |
+| `antigravityQuota.showCredits` | `false` | Include available prompt credits in the status bar. |
+| `antigravityQuota.statusBarPriority` | `100` | Placement within the right-aligned status bar; reload after changing. |
 
----
+## Commands
 
-## ⌨️ Commands
+- **Antigravity Quota: Refresh Quota Now**
+- **Antigravity Quota: Show Quota Details**
+- **Antigravity Quota: Copy Quota Summary to Clipboard**
 
-- `Antigravity Quota: Refresh Quota Now`
-- `Antigravity Quota: Show Quota Details`
-- `Antigravity Quota: Copy Quota Summary to Clipboard`
+## Privacy and compatibility
+
+The extension discovers the local language server process and its authentication token, holds quota responses in memory, and sends HTTPS requests only to `127.0.0.1`. It has no external telemetry endpoint. Copying a summary writes account quota and credit information to your clipboard at your request.
+
+It uses Antigravity internal APIs, which may change without notice. Local self-signed TLS is accepted for the loopback connection. Windows discovery uses PowerShell process queries; macOS and Linux require `ps` and `lsof`. Compatibility with a live Antigravity session must be checked before release.
+
+If the status bar shows **Quota: Offline**, ensure Antigravity is running and use the refresh command.
+
+## License
+
+MIT. Independent project; not affiliated with or endorsed by Google.
